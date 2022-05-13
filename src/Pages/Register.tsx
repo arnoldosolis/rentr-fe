@@ -1,14 +1,32 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import FormWrapper from "../Components/FormWrapper";
+import { gql, useMutation } from "@apollo/client";
+
+const REGISTER = gql`
+  mutation Register($email: String!, $password: String!) {
+    register(options: { email: $email, password: $password }) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
 
 function Register() {
+  const [register] = useMutation(REGISTER);
   return (
     <FormWrapper variant={{ variant: "small" }}>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={(values) => {
           console.log(values);
+          return register(values);
         }}
       >
         {({ values, handleChange }) => (
