@@ -34,7 +34,6 @@ function Register() {
       .email()
       .required("Email is required")
       .test("Unique Email", "This email already exists", (value) => {
-        console.log("Yup", value);
         return !!!userExists;
       }),
     password: Yup.string()
