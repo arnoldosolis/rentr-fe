@@ -33,7 +33,7 @@ function Register() {
     email: Yup.string()
       .email()
       .required("Email is required")
-      .test("Unique Email", "This email already exists", (value) => {
+      .test("Unique Email", "This email already exists", () => {
         // console.log("Yup", value);
         return !!!userExists;
       }),
