@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Formik, Form, Field } from "formik";
 import FormWrapper from "../Components/FormWrapper";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import * as Yup from "yup";
 import { Button } from "@mui/material";
 
@@ -17,22 +17,25 @@ const GET_USER_BY_EMAIL = gql`
   query getUserByEmail($email: String!) {
     getUserByEmail(user: { email: $email }) {
       id
+      email
     }
   }
 `;
 
 function Register() {
   const [register] = useMutation(REGISTER);
-  const [email, setEmail] = useState("EMPTY");
-  const { data } = useQuery(GET_USER_BY_EMAIL, {
-    variables: { email: email },
-  });
+  const [getUserByEmail, { data: userExists }] = useLazyQuery(
+    GET_USER_BY_EMAIL,
+    { fetchPolicy: "network-only" }
+  );
+
   const registerSchema = Yup.object().shape({
     email: Yup.string()
       .email()
       .required("Email is required")
-      .test("Unique Email", "Email already in use", () => {
-        return !!data;
+      .test("Unique Email", "This email already exists", (value) => {
+        console.log("Yup", value);
+        return !!!userExists;
       }),
     password: Yup.string()
       .required("Please specify a password")
@@ -47,7 +50,7 @@ function Register() {
         validateOnChange={false}
         onSubmit={async (values) => {
           // console.log(values);
-          setEmail(values.email);
+          getUserByEmail({ variables: { email: values.email } });
           register({
             variables: {
               email: values.email,
