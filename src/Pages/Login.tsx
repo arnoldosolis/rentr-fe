@@ -23,7 +23,7 @@ const GET_USER_BY_EMAIL = gql`
   }
 `;
 
-function Register() {
+function Login() {
   const navigate = useNavigate();
   const [register] = useMutation(REGISTER, {
     onCompleted: () => {
@@ -122,4 +122,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
