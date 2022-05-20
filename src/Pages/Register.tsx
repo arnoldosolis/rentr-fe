@@ -55,7 +55,7 @@ function Register() {
         initialValues={{ email: "", password: "" }}
         validationSchema={registerSchema}
         validateOnChange={false}
-        onSubmit={async (values) => {
+        onSubmit={(values) => {
           // console.log(values);
           getUserByEmail({ variables: { email: values.email } });
           register({

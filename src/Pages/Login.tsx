@@ -6,9 +6,9 @@ import * as Yup from "yup";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const REGISTER = gql`
-  mutation Register($email: String!, $password: String!) {
-    register(user: { email: $email, password: $password }) {
+const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(user: { email: $email, password: $password }) {
       id
     }
   }
@@ -25,9 +25,9 @@ const GET_USER_BY_EMAIL = gql`
 
 function Login() {
   const navigate = useNavigate();
-  const [register] = useMutation(REGISTER, {
+  const [login] = useMutation(LOGIN, {
     onCompleted: () => {
-      navigate("/");
+      navigate("/home");
     },
   });
   const [getUserByEmail, { data: userExists }] = useLazyQuery(
@@ -36,13 +36,11 @@ function Login() {
   );
 
   const registerSchema = Yup.object().shape({
-    email: Yup.string()
-      .email()
-      .required("Email is required")
-      .test("Unique Email", "This email already exists", () => {
-        // console.log("Yup", value);
-        return !!!userExists;
-      }),
+    email: Yup.string().email().required("Email is required"),
+    // .test("Unique Email", "This email already exists", () => {
+    //   // console.log("Yup", value);
+    //   return !!!userExists;
+    // }),
     password: Yup.string()
       .required("Please specify a password")
       .min(2, "Too Short!")
@@ -55,10 +53,10 @@ function Login() {
         initialValues={{ email: "", password: "" }}
         validationSchema={registerSchema}
         validateOnChange={false}
-        onSubmit={async (values) => {
+        onSubmit={(values) => {
           // console.log(values);
           getUserByEmail({ variables: { email: values.email } });
-          register({
+          login({
             variables: {
               email: values.email,
               password: values.password,
@@ -113,7 +111,7 @@ function Login() {
               variant="contained"
               type="submit"
             >
-              Register
+              Login
             </Button>
           </Form>
         )}
