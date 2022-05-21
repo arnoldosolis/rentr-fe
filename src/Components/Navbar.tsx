@@ -52,7 +52,7 @@ function Navbar() {
   }
   // user not logged in
   else if (!data.getSelf?.email) {
-    console.log(data.getSelf?.email);
+    // console.log(data.getSelf?.email);
     body = (
       <>
         <NavbarLink>
