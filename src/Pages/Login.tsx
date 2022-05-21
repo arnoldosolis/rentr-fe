@@ -28,6 +28,8 @@ function Login() {
   const [login] = useMutation(LOGIN, {
     onCompleted: () => {
       navigate("/home");
+      // TODO - use refetch queries
+      window.location.reload();
     },
   });
   const [getUserByEmail, { data: userExists }] = useLazyQuery(
@@ -35,12 +37,14 @@ function Login() {
     { fetchPolicy: "network-only" }
   );
 
-  const registerSchema = Yup.object().shape({
-    email: Yup.string().email().required("Email is required"),
-    // .test("Unique Email", "This email already exists", () => {
-    //   // console.log("Yup", value);
-    //   return !!!userExists;
-    // }),
+  const loginSchema = Yup.object().shape({
+    email: Yup.string()
+      .email()
+      .required("Email is required")
+      .test("Unique Email", "This email does not exists", () => {
+        // console.log("Yup", value);
+        return !!!userExists;
+      }),
     password: Yup.string()
       .required("Please specify a password")
       .min(2, "Too Short!")
@@ -51,7 +55,7 @@ function Login() {
     <FormWrapper variant={{ variant: "small" }}>
       <Formik
         initialValues={{ email: "", password: "" }}
-        validationSchema={registerSchema}
+        validationSchema={loginSchema}
         validateOnChange={false}
         onSubmit={(values) => {
           // console.log(values);

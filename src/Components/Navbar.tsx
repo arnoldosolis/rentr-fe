@@ -13,25 +13,84 @@ import {
 } from "../styles/Navbar.styles";
 import Logo from "../assets/logo.png";
 // eslint-disable-next-line
-import { BrowserRouter as Routes, Link } from "react-router-dom"; //  Routes is needed to use the "to" property
+import { BrowserRouter as Routes, Link, useNavigate } from "react-router-dom"; //  Routes is needed to use the "to" property
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { Button } from "@mui/material";
+
+const GET_SELF = gql`
+  query getSelf {
+    getSelf {
+      id
+      email
+    }
+  }
+`;
+
+const LOGOUT = gql`
+  mutation Logout {
+    logout
+  }
+`;
 
 function Navbar() {
+  const navigate = useNavigate();
   const [extendNavbar, setExtendNavbar] = useState(false);
+  const [logout, { loading: logoutLoading }] = useMutation(LOGOUT, {
+    onCompleted() {
+      navigate("/");
+      // window.location.reload();
+    },
+    refetchQueries: [
+      {
+        query: GET_SELF,
+      },
+    ],
+  });
+  const { data, loading } = useQuery(GET_SELF);
+  let body = null;
+  if (loading) {
+  }
+  // user not logged in
+  else if (!data.getSelf?.email) {
+    console.log(data.getSelf?.email);
+    body = (
+      <>
+        <NavbarLink>
+          <Link to="/register">Register</Link>
+        </NavbarLink>
+        <NavbarLink>
+          <Link to="/">Login</Link>
+        </NavbarLink>
+      </>
+    );
+  }
+  // user logged in
+  else {
+    body = (
+      <>
+        <NavbarLink>
+          <Link to="/home">Home</Link>
+        </NavbarLink>
+        <Button
+          variant="contained"
+          style={{ backgroundColor: "black" }}
+          onClick={() => {
+            logout();
+          }}
+          disabled={logoutLoading}
+        >
+          Logout
+        </Button>
+      </>
+    );
+  }
   return (
     // TODO - Need to figure out how to add custom prop to style component for better mobile ux
     <NavbarContainer>
       <NavbarInnerContainer>
         <LeftContainer>
           <NavbarLinkContainer>
-            <NavbarLink>
-              <Link to="/register">Register</Link>
-            </NavbarLink>
-            <NavbarLink>
-              <Link to="/">Login</Link>
-            </NavbarLink>
-            <NavbarLink>
-              <Link to="/home">Home</Link>
-            </NavbarLink>
+            {body}
             <OpenLinksButton
               onClick={() => {
                 setExtendNavbar((curr) => !curr);

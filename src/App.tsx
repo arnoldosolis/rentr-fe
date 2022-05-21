@@ -13,11 +13,6 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <Navbar />
-        {/* <nav style={{ backgroundColor: "#1565c0" }}>
-          <Link to="/">Login</Link>
-          <Link to="/register">Register</Link>
-          <Link to="/home">Home</Link>
-        </nav> */}
         <Routes>
           <Route path="/" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
