@@ -4,7 +4,7 @@ import FormWrapper from "../Components/FormWrapper";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import * as Yup from "yup";
 import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
@@ -72,6 +72,8 @@ function Login() {
           <Form>
             <div>
               <label id="email">Email </label>
+            </div>
+            <div>
               <Field
                 id="email"
                 type="email"
@@ -92,6 +94,8 @@ function Login() {
             )}
             <div style={{ marginTop: "4px" }}>
               <label id="password">Password </label>
+            </div>
+            <div>
               <Field
                 id="password"
                 type="password"
@@ -110,6 +114,11 @@ function Login() {
                 {errors.password}
               </div>
             )}
+            <div>
+              <Link to="/forgot-password" style={{ marginLeft: "auto" }}>
+                Forgot password?
+              </Link>
+            </div>
             <Button
               style={{ marginTop: "4px" }}
               variant="contained"
