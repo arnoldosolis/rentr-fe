@@ -52,11 +52,11 @@ function Register() {
   return (
     <FormWrapper variant={{ variant: "small" }}>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", password: "", role: "" }}
         validationSchema={registerSchema}
         validateOnChange={false}
         onSubmit={(values) => {
-          // console.log(values);
+          console.log(values);
           getUserByEmail({ variables: { email: values.email } });
           register({
             variables: {
@@ -66,7 +66,7 @@ function Register() {
           });
         }}
       >
-        {({ values, errors }) => (
+        {({ values, errors, setFieldValue }) => (
           <Form>
             <div>
               <label id="email">Email </label>
@@ -106,6 +106,33 @@ function Register() {
                 }}
               >
                 {errors.password}
+              </div>
+            )}
+            <div style={{ marginTop: "4px" }}>
+              <label id="role">Who are you?</label>
+              <select
+                id="role"
+                name="role"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setFieldValue(values.role, e.target.value);
+                }}
+              >
+                <option value="default"></option>
+                <option value="Tenant">Tenant</option>
+                <option value="Superintendent">Superintendent</option>
+                <option value="Owner">Owner</option>
+              </select>
+            </div>
+            {errors.role && (
+              <div
+                style={{
+                  color: "red",
+                  fontSize: "0.8rem",
+                  marginLeft: "1.5rem",
+                }}
+              >
+                {errors.role}
               </div>
             )}
             <Button
