@@ -7,8 +7,8 @@ import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const REGISTER = gql`
-  mutation Register($email: String!, $password: String!) {
-    register(user: { email: $email, password: $password }) {
+  mutation Register($email: String!, $password: String!, $role: Role!) {
+    register(user: { email: $email, password: $password, role: $role }) {
       id
     }
   }
@@ -27,7 +27,11 @@ function Register() {
   const navigate = useNavigate();
   const [register] = useMutation(REGISTER, {
     onCompleted: () => {
-      navigate("/");
+      navigate("/home");
+      window.location.reload();
+    },
+    onError(e) {
+      console.log(e);
     },
   });
   const [getUserByEmail, { data: userExists }] = useLazyQuery(
@@ -55,13 +59,14 @@ function Register() {
         initialValues={{ email: "", password: "", role: "" }}
         validationSchema={registerSchema}
         validateOnChange={false}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           console.log(values);
           getUserByEmail({ variables: { email: values.email } });
-          register({
+          await register({
             variables: {
               email: values.email,
               password: values.password,
+              role: values.role,
             },
           });
         }}
@@ -114,8 +119,8 @@ function Register() {
                 id="role"
                 name="role"
                 onChange={(e) => {
-                  console.log(e.target.value);
-                  setFieldValue(values.role, e.target.value);
+                  // console.log(e.target.value);
+                  setFieldValue("role", e.target.value);
                 }}
               >
                 <option value="default"></option>
