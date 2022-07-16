@@ -38,7 +38,6 @@ function Navbar() {
   const [logout, { loading: logoutLoading }] = useMutation(LOGOUT, {
     onCompleted() {
       navigate("/");
-      // window.location.reload();
     },
     refetchQueries: [
       {
@@ -70,6 +69,9 @@ function Navbar() {
       <>
         <NavbarLink>
           <Link to="/home">Home</Link>
+        </NavbarLink>
+        <NavbarLink>
+          <Link to="/property">Properties</Link>
         </NavbarLink>
         <Button
           variant="contained"

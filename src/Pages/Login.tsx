@@ -28,8 +28,7 @@ function Login() {
   const [login] = useMutation(LOGIN, {
     onCompleted: () => {
       navigate("/home");
-      // TODO - use refetch queries
-      window.location.reload();
+      // TODO - Fix navbar not refreshing after login
     },
   });
   const [getUserByEmail, { data: userExists }] = useLazyQuery(
